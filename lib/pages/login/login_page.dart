@@ -1,6 +1,7 @@
-import 'package:carros/pages/api_response.dart';
-import 'package:carros/pages/home_Page.dart';
-import 'package:carros/pages/usuario.dart';
+import 'package:carros/pages/login/api_response.dart';
+import 'package:carros/pages/carro/home_Page.dart';
+import 'package:carros/pages/login/usuario.dart';
+
 import 'package:carros/utils/alert.dart';
 import 'package:carros/utils/nav.dart';
 import 'package:carros/widget/app_botoes.dart';
@@ -18,6 +19,8 @@ class _LoginPageState extends State<LoginPage> {
   //Controladores
   final _tLogin = TextEditingController();
   final _tSenha = TextEditingController();
+
+  bool _showProgress = false;
 
   //vALidador do formulário
   final _formKey = GlobalKey<FormState>();
@@ -61,7 +64,8 @@ class _LoginPageState extends State<LoginPage> {
             AppButton(
               "Login",
               onPressed: _onClickLogin,
-            )
+              showProgress: _showProgress,
+            ),
           ],
         ),
       ),
@@ -79,14 +83,21 @@ class _LoginPageState extends State<LoginPage> {
 
     print("Login: $login  Senha: $senha");
 
+    setState(() {
+      _showProgress = true;
+    });
+
     ApiResponse response = await LoginApi.login(login, senha);
     if (response.ok) {
       Usuario user = response.result;
       print(">>>>>>>>> $user");
-      rotas(context, HomePage());
+      rotas(context, HomePage(), replace: true);
     } else {
       alert(context, response.msg);
     }
+    setState(() {
+      _showProgress = false;
+    });
   }
 
   String _validateLogin(String text) {

@@ -1,14 +1,15 @@
 import 'dart:convert';
 
-import 'package:carros/pages/api_response.dart';
-import 'package:carros/pages/usuario.dart';
+import 'package:carros/pages/login/api_response.dart';
+import 'package:carros/pages/login/usuario.dart';
+
 import 'package:http/http.dart' as http;
 
 class LoginApi {
   static Future<ApiResponse<Usuario>> login(String login, String senha) async {
 
     try{
-      var url = 'http://192.168.0.4:8080/api/v1/login';
+      var url = 'http://192.168.0.7:8080/api/v1/login';
 
       //Passa de map para json
       Map<String, String> headers = {"Content-Type": "application/json"};
