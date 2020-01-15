@@ -22,6 +22,18 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _showProgress = false;
 
+  @override
+  void initState() {
+    super.initState();
+
+    Future<Usuario> future = Usuario.get();
+    future.then((Usuario user) {
+      if (user != null) {
+        rotas(context, HomePage(), replace: true);
+      }
+    });
+  }
+
   //vALidador do formulário
   final _formKey = GlobalKey<FormState>();
 
