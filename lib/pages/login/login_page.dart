@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:carros/pages/login/api_response.dart';
 import 'package:carros/pages/carro/home_Page.dart';
+import 'package:carros/pages/login/login_bloc.dart';
 import 'package:carros/pages/login/usuario.dart';
 
 import 'package:carros/utils/alert.dart';
@@ -20,7 +23,10 @@ class _LoginPageState extends State<LoginPage> {
   final _tLogin = TextEditingController();
   final _tSenha = TextEditingController();
 
-  bool _showProgress = false;
+
+
+  final _bloc = LoginBloc();
+
 
   @override
   void initState() {
@@ -49,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _body() {
+
     return Form(
       key: _formKey,
       child: Container(
@@ -73,10 +80,15 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(
               height: 20,
             ),
-            AppButton(
-              "Login",
-              onPressed: _onClickLogin,
-              showProgress: _showProgress,
+            StreamBuilder<bool>(
+              stream: _bloc.stream,
+              builder: (context, snapshot) {
+                return AppButton(
+                  "Login",
+                  onPressed: _onClickLogin,
+                  showProgress: snapshot.data ?? false,
+                );
+              }
             ),
           ],
         ),
@@ -95,21 +107,19 @@ class _LoginPageState extends State<LoginPage> {
 
     print("Login: $login  Senha: $senha");
 
-    setState(() {
-      _showProgress = true;
-    });
 
-    ApiResponse response = await LoginApi.login(login, senha);
+
+
+    ApiResponse response = await _bloc.login(login, senha);
+
     if (response.ok) {
-      Usuario user = response.result;
-      print(">>>>>>>>> $user");
+//      Usuario user = response.result;
+
       rotas(context, HomePage(), replace: true);
     } else {
       alert(context, response.msg);
     }
-    setState(() {
-      _showProgress = false;
-    });
+
   }
 
   String _validateLogin(String text) {
@@ -124,5 +134,11 @@ class _LoginPageState extends State<LoginPage> {
       return "Insira a senha";
     }
     return null;
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    _bloc.dispose();
   }
 }

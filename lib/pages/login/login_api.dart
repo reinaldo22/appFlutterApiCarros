@@ -16,11 +16,9 @@ class LoginApi {
 
       Map params = {'username': login, 'password': senha};
       String s = json.encode(params);
-      print(">>>> $s");
+
       var response = await http.post(url, body: s, headers: headers);
 
-      print('Response status: ${response.statusCode}');
-      print('Response body": ${response.body}');
 
       //Passa de json para Map
       Map mapResponse = json.decode(response.body);
