@@ -1,73 +1,21 @@
-import 'dart:async';
 
-import 'package:carros/pages/carro/carro_page.dart';
-import 'package:carros/pages/carro/carros_bloc.dart';
+import 'package:carros/pages/carros/carro_page.dart';
+
 import 'package:carros/utils/nav.dart';
 import 'package:flutter/material.dart';
 
 import 'carro.dart';
-import 'carros_api.dart';
 
-class CarrosListView extends StatefulWidget {
-  String tipo;
 
-  CarrosListView(this.tipo);
+class CarrosListView extends StatelessWidget {
 
-  @override
-  _CarrosListViewState createState() => _CarrosListViewState();
-}
-
-class _CarrosListViewState extends State<CarrosListView>
-    with AutomaticKeepAliveClientMixin<CarrosListView> {
   List<Carro> carros;
+  CarrosListView(this.carros);
 
-  final _bloc = CarrosBloc();
-
-  String get tipo => widget.tipo;
-
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _bloc.loadCarros(tipo);
-  }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    print("CarrosListView build ${widget.tipo}");
 
-    return StreamBuilder(
-      stream: _bloc.stream,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(
-            child: Text(
-              "Não foi possível buscar os carros",
-              style: TextStyle(
-                color: Colors.red,
-                fontSize: 22,
-              ),
-            ),
-          );
-        }
-        if (!snapshot.hasData) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
-        List<Carro> carros = snapshot.data;
-
-        return _listView(carros);
-      },
-    );
-  }
-
-  _listView(List<Carro> carros) {
     return Container(
       padding: EdgeInsets.all(16.0),
       child: ListView.builder(
@@ -85,14 +33,14 @@ class _CarrosListViewState extends State<CarrosListView>
                     Center(
                       child: c.urlFoto != null
                           ? Image.network(
-                              c.urlFoto,
-                              width: 250,
-                            )
+                        c.urlFoto,
+                        width: 250,
+                      )
                           : Image.network(
-                              c.urlFoto ??
-                                  "http://www.livroandroid.com.br/livro/carros/esportivos/Ferrari_FF.png",
-                              width: 250,
-                            ),
+                        c.urlFoto ??
+                            "http://www.livroandroid.com.br/livro/carros/esportivos/Ferrari_FF.png",
+                        width: 250,
+                      ),
                     ),
                     Text(
                       c.nome,
@@ -111,7 +59,7 @@ class _CarrosListViewState extends State<CarrosListView>
                             'Detalhes',
                             style: TextStyle(color: Colors.blue),
                           ),
-                          onPressed: () => _onclickCarro(c),
+                          onPressed: () => _onclickCarro(context, c),
                         ),
                         FlatButton(
                           child: const Text(
@@ -130,12 +78,8 @@ class _CarrosListViewState extends State<CarrosListView>
     );
   }
 
-  _onclickCarro(Carro c) {
+  _onclickCarro(context, Carro c) {
     rotas(context, CarroPage(c));
   }
-  @override
-  void dispose(){
-    super.dispose();
-    _bloc.dispose();
-  }
+
 }

@@ -1,4 +1,4 @@
-import 'package:carros/pages/carro/simple_bloc.dart';
+import 'package:carros/pages/carros/simple_bloc.dart';
 
 import 'carro.dart';
 import 'carros_api.dart';

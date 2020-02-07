@@ -1,4 +1,4 @@
-import 'package:carros/pages/carro/carro.dart';
+import 'package:carros/pages/carros/carro.dart';
 import 'package:carros/widget/text.dart';
 import 'package:flutter/material.dart';
 

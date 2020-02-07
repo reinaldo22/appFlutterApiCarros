@@ -1,5 +1,6 @@
-import 'package:carros/pages/carro/carros_api.dart';
-import 'package:carros/pages/carro/carros_listview.dart';
+import 'package:carros/pages/carros/carros_api.dart';
+import 'package:carros/pages/carros/carros_listview.dart';
+import 'package:carros/pages/carros/carros_page.dart';
 import 'package:carros/utils/prefs.dart';
 import 'package:carros/widget/drawer_list.dart';
 import 'package:flutter/material.dart';
@@ -54,9 +55,9 @@ class _HomePageState extends State<HomePage>  with SingleTickerProviderStateMixi
         ),
       ),
       body: TabBarView(controller:_tabController ,children: <Widget>[
-        CarrosListView(TipoCarro.classicos),
-        CarrosListView(TipoCarro.esportivos),
-        CarrosListView(TipoCarro.luxo)
+        CarrosPage(TipoCarro.classicos),
+        CarrosPage(TipoCarro.esportivos),
+        CarrosPage(TipoCarro.luxo)
       ],),
       drawer: DrawerList(),
     );
