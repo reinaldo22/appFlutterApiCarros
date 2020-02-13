@@ -1,17 +1,46 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carros/pages/carros/carro.dart';
+import 'package:carros/pages/favoritos/favorito_service.dart';
 import 'package:carros/widget/text.dart';
 import 'package:flutter/material.dart';
 
-class CarroPage extends StatelessWidget {
+import 'lorinpsum_api.dart';
+
+class CarroPage extends StatefulWidget {
   Carro carro;
 
   CarroPage(this.carro);
 
   @override
+  _CarroPageState createState() => _CarroPageState();
+}
+
+class _CarroPageState extends State<CarroPage> {
+  final _loripsumApiBloc = LoripsumBloc();
+
+  Color color = Colors.grey;
+
+  Carro get carro => widget.carro;
+
+  @override
+  void initState() {
+    super.initState();
+
+    FavoritoService.isFavorito(carro).then((bool favorito) {
+      setState(() {
+        color = favorito ? Colors.red : Colors.grey;
+      });
+    });
+
+    _loripsumApiBloc.fetch();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(carro.nome),
+        centerTitle: false,
+        title: Text(widget.carro.nome),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.place),
@@ -22,7 +51,7 @@ class CarroPage extends StatelessWidget {
             onPressed: _onClickVideo,
           ),
           PopupMenuButton<String>(
-            onSelected: _onclickPopupMenu,
+            onSelected: _onClickPopupMenu,
             itemBuilder: (BuildContext context) {
               return [
                 PopupMenuItem(
@@ -36,7 +65,7 @@ class CarroPage extends StatelessWidget {
                 PopupMenuItem(
                   value: "Share",
                   child: Text("Share"),
-                ),
+                )
               ];
             },
           )
@@ -48,38 +77,21 @@ class CarroPage extends StatelessWidget {
 
   _body() {
     return Container(
-        padding: EdgeInsets.all(16),
-        child: ListView(
-          children: <Widget>[
-            Image.network(carro.urlFoto),
-            _bloco1(),
-            Divider(),
-            _bloco2(),
-          ],
-        ));
+      padding: EdgeInsets.all(16),
+      child: ListView(
+        children: <Widget>[
+          CachedNetworkImage(
+            imageUrl: widget.carro.urlFoto ??
+              carro.urlFoto
+          ),
+
+          _bloco1(),
+          Divider(),
+          _bloco2(),
+        ],
+      ),
+    );
   }
-
-  void _onClickMapa() {}
-
-  void _onClickVideo() {}
-
-  _onclickPopupMenu(String value) {
-    switch (value) {
-      case "Editar":
-        print("Delette!!!!");
-        break;
-      case "Deletar":
-        print("Deletado!!!");
-        break;
-      case "Share":
-        print("Sharezado");
-        break;
-    }
-  }
-
-  void _onClickFavorito() {}
-
-  void _onClickShare() {}
 
   Row _bloco1() {
     return Row(
@@ -88,15 +100,8 @@ class CarroPage extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            text(
-              carro.nome,
-              fontSize: 20,
-              bold: true,
-            ),
-            text(
-              carro.tipo,
-              fontSize: 16,
-            ),
+            text(widget.carro.nome, fontSize: 20, bold: true),
+            text(widget.carro.tipo, fontSize: 16)
           ],
         ),
         Row(
@@ -104,7 +109,7 @@ class CarroPage extends StatelessWidget {
             IconButton(
               icon: Icon(
                 Icons.favorite,
-                color: Colors.red,
+                color: color,
                 size: 40,
               ),
               onPressed: _onClickFavorito,
@@ -115,9 +120,9 @@ class CarroPage extends StatelessWidget {
                 size: 40,
               ),
               onPressed: _onClickShare,
-            ),
+            )
           ],
-        ),
+        )
       ],
     );
   }
@@ -126,11 +131,61 @@ class CarroPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        text("Descrição: ${carro.nome}", fontSize: 16, bold: true),
-        SizedBox(height: 20,),
-        text(
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus metus est, rhoncus id nisl eget, sodales auctor mauris. Mauris vel laoreet lacus. Morbi et tortor felis. Aenean gravida mi a tellus finibus ullamcorper. Vivamus posuere, massa vestibulum suscipit imperdiet, ipsum lectus maximus lacus, tincidunt laoreet odio leo et nisl. Donec eleifend nibh sed lectus porta, vitae suscipit turpis egestas. Proin non odio et ligula volutpat consequat. Sed pellentesque maximus metus, non feugiat sem convallis eu. Integer tempus efficitur aliquam. Donec posuere orci non ante sodales, in iaculis tellus tincidunt. Nullam ultricies mi in blandit porttitor. Nunc pulvinar sem quis sapien consectetur, quis cursus magna tristique. Proin ut hendrerit purus.")
+        SizedBox(
+          height: 20,
+        ),
+        text(widget.carro.descricao, fontSize: 16, bold: true),
+        SizedBox(
+          height: 20,
+        ),
+        StreamBuilder<String>(
+          stream: _loripsumApiBloc.stream,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (!snapshot.hasData) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            return text(snapshot.data, fontSize: 16);
+          },
+        ),
       ],
     );
+  }
+
+  void _onClickMapa() {}
+
+  void _onClickVideo() {}
+
+  _onClickPopupMenu(String value) {
+    switch (value) {
+      case "Editar":
+        print("Editar !!!");
+        break;
+      case "Deletar":
+        print("Deletar !!!");
+        break;
+      case "Share":
+        print("Share !!!");
+        break;
+    }
+  }
+
+  void _onClickFavorito() async {
+    bool favorito = await FavoritoService.favoritar(carro);
+
+    setState(() {
+      color = favorito ? Colors.red : Colors.grey;
+    });
+  }
+
+  void _onClickShare() {}
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    _loripsumApiBloc.dispose();
   }
 }

@@ -7,8 +7,7 @@ import 'package:http/http.dart' as http;
 
 class LoginApi {
   static Future<ApiResponse<Usuario>> login(String login, String senha) async {
-
-    try{
+    try {
       var url = 'http://192.168.0.7:8080/api/v1/login';
 
       //Passa de map para json
@@ -18,7 +17,6 @@ class LoginApi {
       String s = json.encode(params);
 
       var response = await http.post(url, body: s, headers: headers);
-
 
       //Passa de json para Map
       Map mapResponse = json.decode(response.body);
@@ -31,7 +29,7 @@ class LoginApi {
         return ApiResponse.ok(user);
       }
       return ApiResponse.error(mapResponse["error"]);
-    }catch(error, exception){
+    } catch (error, exception) {
       print("Error no login $error > $exception");
       return ApiResponse.error("Não foi possìvel fazer o login");
     }

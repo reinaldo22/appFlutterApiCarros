@@ -4,7 +4,6 @@ import 'package:carros/utils/nav.dart';
 import 'package:flutter/material.dart';
 
 class DrawerList extends StatelessWidget {
-
   final urlFoto = "https://avatars3.githubusercontent.com/u/22408651?s=460&v=4";
 
   UserAccountsDrawerHeader _header(Usuario user) {
@@ -17,24 +16,21 @@ class DrawerList extends StatelessWidget {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
-
-
     Future<Usuario> future = Usuario.get();
 
     return SafeArea(
       child: Drawer(
         child: ListView(
           children: <Widget>[
-
             FutureBuilder<Usuario>(
-              future: future, builder: (context, snapshot){
+              future: future,
+              builder: (context, snapshot) {
                 Usuario user = snapshot.data;
 
                 return user != null ? _header(user) : Container();
-                },
+              },
             ),
             ListTile(
               leading: Icon(Icons.star),

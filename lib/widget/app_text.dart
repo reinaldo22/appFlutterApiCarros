@@ -14,6 +14,7 @@ class AppText extends StatelessWidget {
     this.controller,
     this.validator,
   });
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(

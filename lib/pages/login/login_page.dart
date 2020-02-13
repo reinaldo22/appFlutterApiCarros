@@ -11,7 +11,6 @@ import 'package:carros/widget/app_botoes.dart';
 import 'package:carros/widget/app_text.dart';
 import 'package:flutter/material.dart';
 
-import 'login_api.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -22,11 +21,10 @@ class _LoginPageState extends State<LoginPage> {
   //Controladores
   final _tLogin = TextEditingController();
   final _tSenha = TextEditingController();
-
-
-
   final _bloc = LoginBloc();
 
+  //vALidador do formulário
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -40,9 +38,6 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  //vALidador do formulário
-  final _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +50,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _body() {
-
     return Form(
       key: _formKey,
       child: Container(
@@ -81,15 +75,14 @@ class _LoginPageState extends State<LoginPage> {
               height: 20,
             ),
             StreamBuilder<bool>(
-              stream: _bloc.stream,
-              builder: (context, snapshot) {
-                return AppButton(
-                  "Login",
-                  onPressed: _onClickLogin,
-                  showProgress: snapshot.data ?? false,
-                );
-              }
-            ),
+                stream: _bloc.stream,
+                builder: (context, snapshot) {
+                  return AppButton(
+                    "Login",
+                    onPressed: _onClickLogin,
+                    showProgress: snapshot.data ?? false,
+                  );
+                }),
           ],
         ),
       ),
@@ -107,9 +100,6 @@ class _LoginPageState extends State<LoginPage> {
 
     print("Login: $login  Senha: $senha");
 
-
-
-
     ApiResponse response = await _bloc.login(login, senha);
 
     if (response.ok) {
@@ -119,7 +109,6 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       alert(context, response.msg);
     }
-
   }
 
   String _validateLogin(String text) {
@@ -137,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
     _bloc.dispose();
   }

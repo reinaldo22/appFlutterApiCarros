@@ -1,11 +1,9 @@
 
-import 'package:carros/pages/carros/carros_bloc.dart';
-import 'package:carros/pages/carros/carros_listview.dart';
-
 import 'package:flutter/material.dart';
 
 import 'carro.dart';
-
+import 'carros_bloc.dart';
+import 'carros_listview.dart';
 
 class CarrosPage extends StatefulWidget {
   String tipo;
@@ -31,7 +29,7 @@ class _CarrosPageState extends State<CarrosPage>
   void initState() {
     super.initState();
 
-    _bloc.loadCarros(tipo);
+    _bloc.fetch(tipo);
   }
 
   @override

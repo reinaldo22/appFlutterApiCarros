@@ -1,21 +1,18 @@
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carros/pages/carros/carro_page.dart';
-
 import 'package:carros/utils/nav.dart';
+
 import 'package:flutter/material.dart';
 
 import 'carro.dart';
 
-
 class CarrosListView extends StatelessWidget {
-
   List<Carro> carros;
-  CarrosListView(this.carros);
 
+  CarrosListView(this.carros);
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       padding: EdgeInsets.all(16.0),
       child: ListView.builder(
@@ -31,13 +28,8 @@ class CarrosListView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Center(
-                      child: c.urlFoto != null
-                          ? Image.network(
-                        c.urlFoto,
-                        width: 250,
-                      )
-                          : Image.network(
-                        c.urlFoto ??
+                      child: CachedNetworkImage(
+                        imageUrl: c.urlFoto ??
                             "http://www.livroandroid.com.br/livro/carros/esportivos/Ferrari_FF.png",
                         width: 250,
                       ),
@@ -55,11 +47,8 @@ class CarrosListView extends StatelessWidget {
                     ButtonBar(
                       children: <Widget>[
                         FlatButton(
-                          child: const Text(
-                            'Detalhes',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                          onPressed: () => _onclickCarro(context, c),
+                          child: const Text('DETALHES'),
+                          onPressed: () => _onclickCarro(context,c),
                         ),
                         FlatButton(
                           child: const Text(
@@ -69,7 +58,7 @@ class CarrosListView extends StatelessWidget {
                           onPressed: () {},
                         ),
                       ],
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -81,5 +70,4 @@ class CarrosListView extends StatelessWidget {
   _onclickCarro(context, Carro c) {
     rotas(context, CarroPage(c));
   }
-
 }
